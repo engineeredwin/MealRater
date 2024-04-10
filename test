@@ -172,3 +172,70 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
+
+
+***********************************************************************************
+
+import SwiftUI
+import SwiftData
+
+@main
+struct MealRaterApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+        .modelContainer(for: Meal.self)
+    }
+}
+
+struct ContentView: View {
+    @State private var restaurantName = ""
+    @State private var dishName = ""
+    @State private var rating = 0
+    
+    var body: some View {
+        VStack {
+            TextField("Restaurant Name", text: $restaurantName)
+                .padding()
+            
+            TextField("Dish Name", text: $dishName)
+                .padding()
+            
+            Stepper(value: $rating, in: 0...5) {
+                Text("Rating: \(rating)")
+            }
+            .padding()
+            
+            Button(action: {
+                saveMeal()
+            }) {
+                Text("Save")
+            }
+            .padding()
+        }
+    }
+    
+    func saveMeal() {
+        let meal = Meal(restaurantName: restaurantName, dishName: dishName, rating: rating)
+        
+        do {
+            try meal.save()
+            print("Meal saved successfully")
+            // Optionally, you can clear the text fields after saving
+            restaurantName = ""
+            dishName = ""
+            rating = 0
+        } catch {
+            print("Error saving meal: \(error.localizedDescription)")
+        }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+
